@@ -44,7 +44,6 @@ export function Hex({ value, onChange, placeholder = "000000" }: HexProps) {
         value={localValue}
         onChange={handleChange}
         className="font-mono w-20 text-center"
-        maxLength={6}
         placeholder={placeholder}
       />
     </div>
