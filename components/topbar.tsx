@@ -14,6 +14,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { HelpDialog } from "@/components/help-dialog"
+import { ConfirmationDialog } from "@/components/confirmation-dialog"
 import { Undo2, Redo2 } from "lucide-react"
 
 interface TopbarProps {
@@ -47,6 +48,7 @@ export function Topbar({
 }: TopbarProps) {
   const [showExportDialog, setShowExportDialog] = useState(false)
   const [showUrlDialog, setShowUrlDialog] = useState(false)
+  const [showResetDialog, setShowResetDialog] = useState(false)
   const [exportData, setExportData] = useState("")
   const [urlData, setUrlData] = useState("")
   const { showToast, ToastContainer } = useToast()
@@ -134,7 +136,7 @@ export function Topbar({
         <div className="flex items-center gap-2">
           {hasTiles && (
             <>
-              <Button variant="outline" size="sm" onClick={onReset}>
+              <Button variant="outline" size="sm" onClick={() => setShowResetDialog(true)}>
                 Reset
               </Button>
               <Button variant="outline" size="sm" onClick={handleExportJSON}>
@@ -179,6 +181,17 @@ export function Topbar({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ConfirmationDialog
+        isOpen={showResetDialog}
+        onClose={() => setShowResetDialog(false)}
+        onConfirm={() => {
+          onReset()
+          setShowResetDialog(false)
+        }}
+        title="Reset Canvas"
+        message="Are you sure you want to reset the canvas? This will remove all colors and cannot be undone."
+      />
 
       <ToastContainer />
     </>
