@@ -1,14 +1,14 @@
 {
-  "name": "my-v0-project",
-  "version": "0.1.0",
+  "name": "gloss",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "gh-pages -d out --dotfiles",
-    "predeploy": "pnpm build"
+    "release": "touch ./out/.nojekyll && gh-pages -d out --dotfiles",
+    "prerelease": "pnpm build"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",

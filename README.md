@@ -23,7 +23,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 To deploy to GitHub Pages:
 
 ```bash
-pnpm deploy
+pnpm release
 ```
 
 This will automatically build the project and deploy it to GitHub Pages. The app will be available at `https://lobre.github.io/gloss/`
