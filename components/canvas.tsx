@@ -7,7 +7,7 @@ import type { TileType } from "@/lib/types"
 import { Tile } from "@/components/tile"
 import { getContrastColor } from "@/lib/contrast"
 
-// Update the interface to include onMoveEnd
+// Update the interface to include onMoveEnd and onUpdateContrastColors
 interface CanvasProps {
   tiles: TileType[]
   selectedIds: string[]
@@ -20,6 +20,7 @@ interface CanvasProps {
   onKeyDown: (e: React.KeyboardEvent) => void
   onClick?: () => void
   onMoveEnd?: () => void
+  onUpdateContrastColors?: (color1: string, color2: string) => void
 }
 
 export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
@@ -36,6 +37,7 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
       onKeyDown,
       onClick,
       onMoveEnd,
+      onUpdateContrastColors,
     },
     ref,
   ) => {
@@ -91,8 +93,23 @@ export const Canvas = forwardRef<HTMLDivElement, CanvasProps>(
       e.preventDefault()
       const { x, y } = getCanvasCoordinates(e)
 
-      // Create tile with top-left at mouse position
-      onCreateTile(x, y, e.ctrlKey || isCtrlPressed)
+      // Check if we clicked on a tile
+      const clickedTile = tiles.find(tile => {
+        return x >= tile.x && x <= tile.x + tile.width &&
+               y >= tile.y && y <= tile.y + tile.height
+      })
+
+      if (clickedTile && selectedIds.length === 1 && onUpdateContrastColors) {
+        // If we have one tile selected and right-clicked another tile,
+        // update contrast colors without changing selection
+        const selectedTile = tiles.find(t => t.id === selectedIds[0])
+        if (selectedTile) {
+          onUpdateContrastColors(selectedTile.color, clickedTile.color)
+        }
+      } else {
+        // Create tile with top-left at mouse position
+        onCreateTile(x, y, e.ctrlKey || isCtrlPressed)
+      }
     }
 
     // Handle mouse down for selection

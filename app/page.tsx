@@ -432,6 +432,11 @@ export default function GlossApp() {
     return luminance > 0.5 ? '#000000' : '#FFFFFF'
   }
 
+  const handleUpdateContrastColors = (color1: string, color2: string) => {
+    setContrastColor1(color1)
+    setContrastColor2(color2)
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -474,6 +479,7 @@ export default function GlossApp() {
             onKeyDown={handleCanvasKeyDown}
             onClick={handleCanvasClick}
             onMoveEnd={handleTileMoveEnd}
+            onUpdateContrastColors={handleUpdateContrastColors}
           />
         </div>
         <Sidebar
