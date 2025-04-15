@@ -13,6 +13,9 @@ try {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  basePath: process.env.NODE_ENV === 'production' ? '/gloss' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/gloss/' : '',
   eslint: {
     ignoreDuringBuilds: true,
   },
