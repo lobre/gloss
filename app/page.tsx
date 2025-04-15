@@ -130,9 +130,23 @@ export default function GlossApp() {
       setIsBackgroundSelected(false)
     }
 
+    // Find the first available number for the color label
+    const usedNumbers = new Set<number>()
+    tiles.forEach(tile => {
+      const match = tile.label.match(/^color (\d+)$/)
+      if (match) {
+        usedNumbers.add(parseInt(match[1], 10))
+      }
+    })
+
+    let nextNumber = 1
+    while (usedNumbers.has(nextNumber)) {
+      nextNumber++
+    }
+
     const newTile: TileType = {
       id: `tile-${Date.now()}`,
-      label: `color ${tiles.length + 1}`,
+      label: `color ${nextNumber}`,
       description: "",
       color:
         "#" +

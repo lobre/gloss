@@ -2,9 +2,11 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: 'Gloss - Color Palette Designer',
+  description: 'A tool for designing color palettes with precision and accessibility',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({
