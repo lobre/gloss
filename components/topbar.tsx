@@ -151,7 +151,18 @@ export function Topbar({
       </div>
 
       {/* Export JSON Dialog */}
-      <Dialog open={showExportDialog} onOpenChange={setShowExportDialog}>
+      <Dialog open={showExportDialog} onOpenChange={(open) => {
+        setShowExportDialog(open)
+        if (!open) {
+          // Restore focus to the canvas after dialog closes
+          setTimeout(() => {
+            const canvasDiv = document.querySelector('.relative.overflow-auto.flex-1')
+            if (canvasDiv) {
+              (canvasDiv as HTMLElement).focus()
+            }
+          }, 0)
+        }
+      }}>
         <DialogContent className="max-w-2xl" aria-describedby="export-dialog-description">
           <DialogHeader>
             <DialogTitle>Export JSON</DialogTitle>
@@ -167,7 +178,18 @@ export function Topbar({
       </Dialog>
 
       {/* Copy URL Dialog */}
-      <Dialog open={showUrlDialog} onOpenChange={setShowUrlDialog}>
+      <Dialog open={showUrlDialog} onOpenChange={(open) => {
+        setShowUrlDialog(open)
+        if (!open) {
+          // Restore focus to the canvas after dialog closes
+          setTimeout(() => {
+            const canvasDiv = document.querySelector('.relative.overflow-auto.flex-1')
+            if (canvasDiv) {
+              (canvasDiv as HTMLElement).focus()
+            }
+          }, 0)
+        }
+      }}>
         <DialogContent className="max-w-2xl" aria-describedby="url-dialog-description">
           <DialogHeader>
             <DialogTitle>Share URL</DialogTitle>
@@ -184,7 +206,16 @@ export function Topbar({
 
       <ConfirmationDialog
         isOpen={showResetDialog}
-        onClose={() => setShowResetDialog(false)}
+        onClose={() => {
+          setShowResetDialog(false)
+          // Restore focus to the canvas after dialog closes
+          setTimeout(() => {
+            const canvasDiv = document.querySelector('.relative.overflow-auto.flex-1')
+            if (canvasDiv) {
+              (canvasDiv as HTMLElement).focus()
+            }
+          }, 0)
+        }}
         onConfirm={() => {
           onReset()
           setShowResetDialog(false)
