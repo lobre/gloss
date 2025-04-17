@@ -26,6 +26,7 @@ export function MultiColorPicker({
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [colorSpace, setColorSpace] = useState<ColorSpace>(defaultColorSpace)
   const [mode, setMode] = useState<PickerMode>(defaultMode)
+  const [forceUpdate, setForceUpdate] = useState(false)
 
   // Default color if none provided
   const safeColors = useMemo(() => {
@@ -279,13 +280,39 @@ export function MultiColorPicker({
   }
 
   // Handle hex value editing
-  const handleHexChange = (hex: string) => {
-    const newColors = [...safeColors]
-    newColors[selectedIndex] = hex
+  const handleHexChange = async (hex: string) => {
+    // Save original hex value
+    const originalHex = safeColors[selectedIndex]
 
-    // Notify parent
-    if (onChange) {
-      onChange(newColors)
+    // Apply the hex change to safeColors
+    safeColors[selectedIndex] = hex
+
+    // Get normalized colors based on the current mode
+    const normalizedColors = normalizeColors(false, mode, colorSpace)
+
+    // Check if normalization would change the colors
+    if (!areColorArraysEqual(normalizedColors, safeColors, colorSpace)) {
+      // Colors would need normalization - ask for confirmation
+      const shouldNormalize = confirmNormalization ? confirmNormalization('hexChange') : Promise.resolve(true)
+      const confirmed = await shouldNormalize
+      
+      if (confirmed) {
+        // User confirmed - apply normalized colors
+        if (onChange) {
+          onChange(normalizedColors, false)
+        }
+      } else {
+        // User rejected - revert to original hex value
+        safeColors[selectedIndex] = originalHex
+        if (onChange) {
+          onChange(safeColors, false)
+        }
+      }
+    } else {
+      // No normalization needed - apply the hex change
+      if (onChange) {
+        onChange(safeColors)
+      }
     }
   }
 

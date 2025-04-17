@@ -2,11 +2,11 @@ export type ColorSpace = "hsl" | "okhsl"
 export type PickerMode = "wheel" | "slider"
 
 export interface MultiColorPickerProps {
-  colors: string[]
-  onChange: (colors: string[], forceResetHistory?: boolean) => void
+  colors?: string[]
+  onChange?: (colors: string[], forceResetHistory?: boolean) => void
   defaultColorSpace?: ColorSpace
   defaultMode?: PickerMode
-  confirmNormalization?: (context: 'initialization' | 'modeChange' | 'colorSpaceChange') => Promise<boolean>
+  confirmNormalization?: (context: 'initialization' | 'modeChange' | 'colorSpaceChange' | 'hexChange') => Promise<boolean>
   onResetColorHistory?: () => void
 }
 

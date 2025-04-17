@@ -43,7 +43,7 @@ export default function GlossApp() {
 
   // Handle color normalization confirmation
   const [showConfirmation, setShowConfirmation] = useState(false)
-  const [confirmationContext, setConfirmationContext] = useState<'initialization' | 'modeChange' | 'colorSpaceChange'>('initialization')
+  const [confirmationContext, setConfirmationContext] = useState<'initialization' | 'modeChange' | 'colorSpaceChange' | 'hexChange'>('initialization')
   const [confirmationResolve, setConfirmationResolve] = useState<((confirmed: boolean) => void) | null>(null)
 
   // New contrast colors state
@@ -420,16 +420,22 @@ export default function GlossApp() {
 
   // Handle confirmation response
   const handleConfirmationResponse = (confirmed: boolean) => {
-    setShowConfirmation(false)
     if (confirmationResolve) {
+      // Only clear selection if it's initialization context
+      if (!confirmed && confirmationContext === 'initialization') {
+        setSelectedIds([])
+        setIsBackgroundSelected(false)
+      }
       confirmationResolve(confirmed)
       setConfirmationResolve(null)
-    }
 
-    // Clear selection if normalization was rejected
-    if (!confirmed) {
-      setSelectedIds([])
-      setIsBackgroundSelected(false)
+      // Restore focus to the canvas after dialog closes
+      setTimeout(() => {
+        const canvasDiv = document.querySelector('.relative.overflow-auto.flex-1')
+        if (canvasDiv) {
+          (canvasDiv as HTMLElement).focus()
+        }
+      }, 0)
     }
   }
 
@@ -509,11 +515,11 @@ export default function GlossApp() {
       </div>
       <BottomBar color1={contrastColor1} color2={contrastColor2} />
       <ConfirmationDialog
-        isOpen={showConfirmation}
+        isOpen={!!confirmationResolve}
         onClose={() => handleConfirmationResponse(false)}
         onConfirm={() => handleConfirmationResponse(true)}
-        title="Confirm Color Normalization"
-        message="This action will normalize the selected colors. Do you want to proceed?"
+        title="Normalize Colors"
+        message="The color picker enforces constraints between colors based on the current mode. Accept to normalize colors and maintain these constraints."
       />
     </div>
   )
