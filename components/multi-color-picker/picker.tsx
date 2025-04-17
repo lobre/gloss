@@ -289,11 +289,34 @@ export function MultiColorPicker({
     }
   }
 
-  // Handle HSL value changes
+  // Handle HSL value editing
   const handleHslChange = (h: number, s: number, l: number) => {
-    const newColor = currentConverter.toHex(h / 360, s, l)
     const newColors = [...safeColors]
-    newColors[selectedIndex] = newColor
+
+    if (mode === "wheel") {
+      // In wheel mode, all colors share the same lightness
+      // Update the selected color's hue and saturation
+      newColors[selectedIndex] = currentConverter.toHex(h / 360, s, l)
+      
+      // Update all other colors to maintain the same lightness
+      for (let i = 0; i < newColors.length; i++) {
+        if (i === selectedIndex) continue
+        
+        const values = colorSpace === "hsl" ? hexToHsl(newColors[i]) : hexToOkhsl(newColors[i])
+        if (!values) continue
+        
+        newColors[i] = currentConverter.toHex(values[0], values[1], l)
+      }
+    } else {
+      // In slider mode, all colors share the same hue and saturation
+      // Update all colors with the new hue and saturation
+      for (let i = 0; i < newColors.length; i++) {
+        const values = colorSpace === "hsl" ? hexToHsl(newColors[i]) : hexToOkhsl(newColors[i])
+        if (!values) continue
+        
+        newColors[i] = currentConverter.toHex(h / 360, s, values[2])
+      }
+    }
 
     // Notify parent
     if (onChange) {
